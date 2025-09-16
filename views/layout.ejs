@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="<%= description || 'Biblioteca Pessoal de Prompts - Organize e reutilize seus prompts de IA' %>">
+    <title><%= title || 'Biblioteca Pessoal de Prompts' %></title>
+    
+    <!-- CSS Principal -->
+    <link rel="stylesheet" href="/css/main.css">
+    
+    <!-- Fontes do Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Ícones (Lucide - alternativa ao Font Awesome) -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <!-- CSS adicional da página -->
+    <% if (typeof additionalCSS !== 'undefined') { %>
+        <%- additionalCSS %>
+    <% } %>
+</head>
+<body>
+    <!-- Header/Navigation -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>
+                        <i data-lucide="book-open"></i>
+                        Biblioteca de Prompts
+                    </h1>
+                </div>
+                
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="/" class="<%= currentPage === 'home' ? 'active' : '' %>">
+                            <i data-lucide="home"></i> Início
+                        </a></li>
+                        <li><a href="/biblioteca" class="<%= currentPage === 'biblioteca' ? 'active' : '' %>">
+                            <i data-lucide="library"></i> Minha Biblioteca
+                        </a></li>
+                        <li><a href="/criar" class="<%= currentPage === 'criar' ? 'active' : '' %>">
+                            <i data-lucide="plus-circle"></i> Criar Prompt
+                        </a></li>
+                    </ul>
+                </nav>
+                
+                <!-- Menu mobile (hamburger) -->
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i data-lucide="menu"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Menu mobile -->
+    <nav class="mobile-nav" id="mobileNav">
+        <ul>
+            <li><a href="/" onclick="closeMobileMenu()">
+                <i data-lucide="home"></i> Início
+            </a></li>
+            <li><a href="/biblioteca" onclick="closeMobileMenu()">
+                <i data-lucide="library"></i> Minha Biblioteca
+            </a></li>
+            <li><a href="/criar" onclick="closeMobileMenu()">
+                <i data-lucide="plus-circle"></i> Criar Prompt
+            </a></li>
+        </ul>
+    </nav>
+
+    <!-- Conteúdo principal -->
+    <main class="main-content">
+        <!-- Breadcrumb (se existir) -->
+        <% if (typeof breadcrumb !== 'undefined' && breadcrumb.length > 0) { %>
+            <div class="container">
+                <nav class="breadcrumb">
+                    <% breadcrumb.forEach((item, index) => { %>
+                        <% if (index === breadcrumb.length - 1) { %>
+                            <span class="breadcrumb-current"><%= item.name %></span>
+                        <% } else { %>
+                            <a href="<%= item.url %>"><%= item.name %></a>
+                            <i data-lucide="chevron-right"></i>
+                        <% } %>
+                    <% }); %>
+                </nav>
+            </div>
+        <% } %>
+
+        <!-- Conteúdo da página -->
+        <%- body %>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <p>
+                        <i data-lucide="heart"></i>
+                        Feito com carinho para organizar seus prompts de IA
+                    </p>
+                </div>
+                <div class="footer-links">
+                    <span class="version">v1.0.0</span>
+                    <span class="separator">•</span>
+                    <span class="tech">Node.js + Express</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+    
+    <!-- JavaScript adicional da página -->
+    <% if (typeof additionalJS !== 'undefined') { %>
+        <%- additionalJS %>
+    <% } %>
+
+    <!-- Inicializar ícones Lucide -->
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

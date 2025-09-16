@@ -1,0 +1,583 @@
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    Organize seus
+                    <span class="gradient-text">Prompts de IA</span>
+                    como nunca antes
+                </h1>
+                <p class="hero-description">
+                    Crie, salve e reutilize seus melhores prompts em um só lugar. 
+                    Pare de perder tempo procurando ou recriando prompts que já funcionaram.
+                </p>
+                <div class="hero-actions">
+                    <a href="/criar" class="btn btn-primary btn-large">
+                        <i data-lucide="plus-circle"></i>
+                        Criar Primeiro Prompt
+                    </a>
+                    <a href="/biblioteca" class="btn btn-secondary btn-large">
+                        <i data-lucide="library"></i>
+                        Ver Biblioteca
+                    </a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-card-demo">
+                    <div class="demo-card">
+                        <div class="demo-card-header">
+                            <h3>📚 Resumo de Artigo</h3>
+                            <span class="demo-tag">Estudos</span>
+                        </div>
+                        <p>Resuma o seguinte artigo em 3 pontos principais, mantendo o tom acadêmico...</p>
+                        <div class="demo-actions">
+                            <button class="demo-btn">
+                                <i data-lucide="copy"></i>
+                                Copiar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+    <div class="container">
+        <div class="section-header">
+            <h2>Por que usar nossa biblioteca?</h2>
+            <p>Funcionalidades pensadas para quem usa IA no dia a dia</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i data-lucide="bookmark"></i>
+                </div>
+                <h3>Salvar & Organizar</h3>
+                <p>Categorize seus prompts por assunto, projeto ou tipo. Tags personalizáveis para encontrar rapidamente.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i data-lucide="copy"></i>
+                </div>
+                <h3>Copiar Rapidamente</h3>
+                <p>Um clique para copiar qualquer prompt. Sem complicações, direto para sua ferramenta de IA favorita.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i data-lucide="search"></i>
+                </div>
+                <h3>Busca Inteligente</h3>
+                <p>Encontre prompts por título, categoria, tags ou até mesmo pelo conteúdo. Rápido e eficiente.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i data-lucide="edit-3"></i>
+                </div>
+                <h3>Editar & Melhorar</h3>
+                <p>Refine seus prompts com base nos resultados. Mantenha sempre a versão mais eficiente.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Examples Section -->
+<section class="examples">
+    <div class="container">
+        <div class="section-header">
+            <h2>Exemplos de Prompts</h2>
+            <p>Inspire-se com estes exemplos e comece sua biblioteca</p>
+        </div>
+        
+        <div class="examples-grid">
+            <% examplePrompts.forEach(function(prompt) { %>
+                <div class="example-card">
+                    <div class="example-header">
+                        <h3><%= prompt.emoji %> <%= prompt.title %></h3>
+                        <span class="example-category" style="--category-color: <%= prompt.categoryColor %>">
+                            <%= prompt.category %>
+                        </span>
+                    </div>
+                    <p class="example-description"><%= prompt.description %></p>
+                    <div class="example-content">
+                        <code><%= prompt.content.substring(0, 120) %>...</code>
+                    </div>
+                    <div class="example-actions">
+                        <button class="example-btn" onclick="copyToClipboard(`<%= prompt.content.replace(/`/g, '\\`') %>`)">
+                            <i data-lucide="copy"></i>
+                            Copiar Prompt
+                        </button>
+                        <span class="example-tone"><%= prompt.tone %></span>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+        
+        <div class="examples-footer">
+            <p>Estes são apenas exemplos. <strong>Crie sua própria biblioteca personalizada!</strong></p>
+            <a href="/criar" class="btn btn-primary">
+                <i data-lucide="plus-circle"></i>
+                Começar Agora
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Pronto para organizar seus prompts?</h2>
+            <p>Comece gratuitamente e descubra como é fácil ter todos seus prompts organizados em um só lugar.</p>
+            <div class="cta-stats">
+                <div class="stat">
+                    <strong><%= totalPrompts %></strong>
+                    <span>Prompts salvos</span>
+                </div>
+                <div class="stat">
+                    <strong><%= totalCategories %></strong>
+                    <span>Categorias</span>
+                </div>
+                <div class="stat">
+                    <strong>100%</strong>
+                    <span>Gratuito</span>
+                </div>
+            </div>
+            <a href="/criar" class="btn btn-primary btn-large">
+                <i data-lucide="rocket"></i>
+                Criar Meu Primeiro Prompt
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- CSS específico da página -->
+<style>
+/* ===== HERO SECTION ===== */
+.hero {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 80px 0 100px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>');
+    background-size: 50px 50px;
+}
+
+.hero-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.hero-title {
+    font-size: 3.5em;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 20px;
+}
+
+.gradient-text {
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-description {
+    font-size: 1.2em;
+    opacity: 0.9;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.btn-large {
+    padding: 16px 32px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* Demo Card */
+.hero-visual {
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.hero-card-demo {
+    transform: rotate(5deg);
+    animation: float 6s ease-in-out infinite;
+}
+
+.demo-card {
+    background: white;
+    color: var(--gray-800);
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    max-width: 300px;
+    position: relative;
+}
+
+.demo-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: var(--gradient-accent);
+    border-radius: 18px;
+    z-index: -1;
+}
+
+.demo-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.demo-card-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.demo-tag {
+    background: var(--gray-100);
+    color: var(--gray-600);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.demo-card p {
+    color: var(--gray-600);
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.demo-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.demo-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.demo-btn:hover {
+    background: var(--primary-dark);
+}
+
+@keyframes float {
+    0%, 100% { transform: rotate(5deg) translateY(0px); }
+    50% { transform: rotate(5deg) translateY(-20px); }
+}
+
+/* ===== FEATURES SECTION ===== */
+.features {
+    padding: 100px 0;
+    background: white;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 80px;
+}
+
+.section-header h2 {
+    font-size: 2.5em;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 15px;
+}
+
+.section-header p {
+    font-size: 1.1em;
+    color: var(--gray-600);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+}
+
+.feature-card {
+    text-align: center;
+    padding: 40px 30px;
+    border-radius: 16px;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-100);
+    transition: var(--transition);
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
+}
+
+.feature-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--gradient-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px;
+}
+
+.feature-icon i {
+    width: 40px;
+    height: 40px;
+    color: white;
+}
+
+.feature-card h3 {
+    font-size: 1.3em;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 15px;
+}
+
+.feature-card p {
+    color: var(--gray-600);
+    line-height: 1.6;
+}
+
+/* ===== EXAMPLES SECTION ===== */
+.examples {
+    padding: 100px 0;
+    background: var(--gray-50);
+}
+
+.examples-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+    margin-bottom: 60px;
+}
+
+.example-card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
+    transition: var(--transition);
+}
+
+.example-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.example-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.example-header h3 {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: var(--gray-800);
+}
+
+.example-category {
+    background: var(--category-color, var(--primary));
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.example-description {
+    color: var(--gray-600);
+    font-size: 14px;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.example-content {
+    background: var(--gray-50);
+    border-left: 4px solid var(--primary);
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.example-content code {
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 13px;
+    color: var(--gray-700);
+    line-height: 1.4;
+}
+
+.example-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.example-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.example-btn:hover {
+    background: var(--primary-dark);
+}
+
+.example-tone {
+    color: var(--gray-500);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 8px;
+    background: var(--gray-100);
+    border-radius: 4px;
+}
+
+.examples-footer {
+    text-align: center;
+    padding-top: 40px;
+    border-top: 1px solid var(--gray-200);
+}
+
+.examples-footer p {
+    color: var(--gray-600);
+    margin-bottom: 25px;
+}
+
+/* ===== CTA SECTION ===== */
+.cta {
+    padding: 100px 0;
+    background: var(--gradient-primary);
+    color: white;
+    text-align: center;
+}
+
+.cta-content h2 {
+    font-size: 2.5em;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.cta-content p {
+    font-size: 1.1em;
+    opacity: 0.9;
+    margin-bottom: 50px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-stats {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin-bottom: 50px;
+    flex-wrap: wrap;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat strong {
+    display: block;
+    font-size: 2.5em;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 5px;
+}
+
+.stat span {
+    font-size: 14px;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 768px) {
+    .hero-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        text-align: center;
+    }
+    
+    .hero-title {
+        font-size: 2.5em;
+    }
+    
+    .hero-actions {
+        justify-content: center;
+    }
+    
+    .examples-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .cta-stats {
+        gap: 30px;
+    }
+    
+    .section-header h2 {
+        font-size: 2em;
+    }
+}
+</style>

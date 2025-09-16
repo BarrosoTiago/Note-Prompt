@@ -1,13 +1,17 @@
+// ===== BIBLIOTECA PESSOAL DE PROMPTS =====
+// Servidor principal da aplicação
 
 // 1. IMPORTAR DEPENDÊNCIAS (ES Modules)
-import express from 'express';                
-import path from 'path';                      
-import bodyParser from 'body-parser';       
-import { fileURLToPath } from 'url';          
-import { config } from './config/config.js'; 
-import { createDirectories } from './utils/fileUtils.js'; 
+import express from 'express';                // Framework web para Node.js
+import path from 'path';                      // Utilitário para trabalhar com caminhos
+import bodyParser from 'body-parser';        // Para processar dados de formulários
+import expressLayouts from 'express-ejs-layouts'; // Para usar layouts EJS
+import { fileURLToPath } from 'url';          // Para trabalhar com __dirname em ES Modules
+import { config } from './config/config.js'; // Configurações da aplicação
+import { createDirectories } from './utils/fileUtils.js'; // Utilitários de arquivo
 
 // 2. CONFIGURAR __dirname PARA ES MODULES
+// Em ES Modules, __dirname não existe nativamente, então criamos manualmente
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -16,50 +20,88 @@ const app = express();
 const PORT = config.server.port;
 
 // 4. CONFIGURAÇÕES DO EXPRESS
+// Definir EJS como engine de templates (para criar páginas dinâmicas)
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, config.paths.views));
 
+// Configurar layouts EJS
+app.use(expressLayouts);
+app.set('layout', 'layout'); // arquivo layout.ejs como padrão
+app.set('layout extractScripts', true); // extrair scripts para o final
+app.set('layout extractStyles', true);  // extrair estilos para o head
+
+// Middleware para servir arquivos estáticos (CSS, JS, imagens)
 app.use(express.static(path.join(__dirname, config.paths.public)));
 
+// Middleware para processar dados de formulários
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // 5. ROTAS BÁSICAS
-app.get('/', (req, res) => {
+// Rota principal - página inicial
+app.get('/', async (req, res) => {
     console.log('📖 Usuário acessou a página inicial');
-    res.send(`
-        <h1>🏠 ${config.app.name}</h1>
-        <p>Servidor funcionando perfeitamente com <strong>ES Modules</strong>! 🚀</p>
-        <p>Versão: ${config.app.version}</p>
-        <p>Ambiente: ${config.server.environment}</p>
-        <p>Em breve teremos a interface completa...</p>
-        <style>
-            body { 
-                font-family: 'Segoe UI', Arial, sans-serif; 
-                max-width: 700px; 
-                margin: 50px auto; 
-                text-align: center;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                padding: 40px;
-                border-radius: 10px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    
+    try {
+        // Dados exemplo para a página inicial
+        const examplePrompts = [
+            {
+                emoji: '📚',
+                title: 'Resumo de Artigo',
+                category: 'Estudos',
+                categoryColor: '#3498db',
+                description: 'Resuma textos acadêmicos mantendo os pontos principais',
+                content: 'Resuma o seguinte artigo em 3 pontos principais, mantendo o tom acadêmico e destacando as conclusões mais importantes: [TEXTO DO ARTIGO]',
+                tone: 'Acadêmico'
+            },
+            {
+                emoji: '📈',
+                title: 'Post para Instagram',
+                category: 'Marketing', 
+                categoryColor: '#e74c3c',
+                description: 'Crie posts envolventes para redes sociais',
+                content: 'Crie um post para Instagram sobre [TEMA] que seja envolvente, use emojis relevantes e inclua 5 hashtags populares. O tom deve ser [casual/profissional] e o objetivo é [engajar/vender/informar].',
+                tone: 'Criativo'
+            },
+            {
+                emoji: '💻',
+                title: 'Debug de Código',
+                category: 'Programação',
+                categoryColor: '#2ecc71', 
+                description: 'Analise e corrija erros em códigos de programação',
+                content: 'Analise o seguinte código [LINGUAGEM] e identifique possíveis bugs, problemas de performance ou melhorias. Explique cada problema e sugira a correção: [CÓDIGO]',
+                tone: 'Técnico'
+            },
+            {
+                emoji: '✉️',
+                title: 'E-mail Profissional',
+                category: 'Atendimento',
+                categoryColor: '#f39c12',
+                description: 'Redija e-mails profissionais para diferentes situações',
+                content: 'Redija um e-mail profissional para [DESTINATÁRIO] sobre [ASSUNTO]. O tom deve ser [formal/cordial] e o objetivo é [informar/solicitar/agradecer]. Inclua uma saudação apropriada e fechamento adequado.',
+                tone: 'Formal'
             }
-            h1 { 
-                color: #fff; 
-                margin-bottom: 20px;
-                font-size: 2.5em;
-            }
-            p { 
-                font-size: 1.1em; 
-                margin: 15px 0;
-                opacity: 0.9;
-            }
-            strong { color: #FFD700; }
-        </style>
-    `);
+        ];
+
+        // Dados para o template
+        const templateData = {
+            title: 'Início - Biblioteca Pessoal de Prompts',
+            description: 'Organize e reutilize seus prompts de IA em um só lugar. Crie, salve e encontre rapidamente seus melhores prompts.',
+            currentPage: 'home',
+            examplePrompts: examplePrompts,
+            totalPrompts: 156, // Dados fictícios por enquanto
+            totalCategories: 5,
+            breadcrumb: [] // Página inicial não precisa de breadcrumb
+        };
+
+        res.render('index', templateData);
+    } catch (error) {
+        console.error('❌ Erro ao renderizar página inicial:', error);
+        res.status(500).send('Erro interno do servidor');
+    }
 });
 
+// Rota de teste para verificar se está tudo funcionando
 app.get('/teste', (req, res) => {
     res.json({ 
         status: 'success', 
@@ -74,8 +116,10 @@ app.get('/teste', (req, res) => {
 });
 
 // 6. INICIAR SERVIDOR
+// Função assíncrona para inicializar a aplicação
 async function startServer() {
     try {
+        // Criar diretórios necessários
         await createDirectories([
             config.paths.public,
             config.paths.views, 
