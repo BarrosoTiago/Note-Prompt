@@ -1,0 +1,92 @@
+[
+  {
+    "id": "mflze6pbxjm580mbj1n",
+    "title": "Resumo de Artigo Acadêmico",
+    "description": "Cria resumos concisos de artigos científicos mantendo os pontos principais",
+    "content": "Resuma o seguinte artigo acadêmico em 3 pontos principais, mantendo o tom científico e destacando:\n\n1. Objetivo principal do estudo\n2. Metodologia utilizada\n3. Conclusões e implicações\n\nArtigo: [COLAR TEXTO DO ARTIGO AQUI]\n\nFormato: Use marcadores para cada ponto e seja conciso mas informativo.",
+    "category": "Estudos",
+    "tags": [
+      "resumo",
+      "acadêmico",
+      "pesquisa",
+      "científico"
+    ],
+    "tone": "Formal",
+    "createdAt": "2025-09-16T03:16:23.278Z",
+    "updatedAt": "2025-09-16T03:16:23.278Z",
+    "isExample": true,
+    "usageCount": 0
+  },
+  {
+    "id": "mflze6pbi1t6pxezmc",
+    "title": "Post Criativo para Instagram",
+    "description": "Gera posts envolventes para Instagram com hooks, emojis e hashtags",
+    "content": "Crie um post para Instagram sobre [TEMA/PRODUTO] seguindo esta estrutura:\n\n📱 HOOK inicial (primeira linha que prende atenção)\n💡 Desenvolvimento do tema (2-3 frases explicativas)\n🎯 Call-to-action no final\n\nUse:\n- Emojis relevantes\n- Tom [casual/profissional]\n- 5-7 hashtags populares\n- Máximo 150 palavras\n\nObjetivo: [engajar/vender/informar/educar]",
+    "category": "Marketing",
+    "tags": [
+      "instagram",
+      "redes sociais",
+      "post",
+      "engajamento"
+    ],
+    "tone": "Criativo",
+    "createdAt": "2025-09-16T03:16:23.279Z",
+    "updatedAt": "2025-09-16T03:16:23.279Z",
+    "isExample": true,
+    "usageCount": 0
+  },
+  {
+    "id": "mflze6pb4g7pof5w5mw",
+    "title": "Debug e Análise de Código",
+    "description": "Analisa códigos em busca de bugs, melhorias de performance e boas práticas",
+    "content": "Analise o seguinte código [LINGUAGEM] e forneça:\n\n🔍 **ANÁLISE DE BUGS:**\n- Possíveis erros de lógica\n- Problemas de sintaxe\n- Casos extremos não tratados\n\n⚡ **OTIMIZAÇÃO:**\n- Melhorias de performance\n- Refatoração sugerida\n- Padrões mais eficientes\n\n✅ **BOAS PRÁTICAS:**\n- Convenções de nomenclatura\n- Estrutura do código\n- Documentação necessária\n\nCódigo:\n[COLAR CÓDIGO AQUI]",
+    "category": "Programação",
+    "tags": [
+      "debug",
+      "código",
+      "programação",
+      "otimização"
+    ],
+    "tone": "Técnico",
+    "createdAt": "2025-09-16T03:16:23.279Z",
+    "updatedAt": "2025-09-16T03:16:23.279Z",
+    "isExample": true,
+    "usageCount": 0
+  },
+  {
+    "id": "mflze6pbpqfv1bem8s",
+    "title": "E-mail Profissional Personalizado",
+    "description": "Redige e-mails profissionais para diferentes contextos e destinatários",
+    "content": "Redija um e-mail profissional com os seguintes parâmetros:\n\n📧 **CONTEXTO:**\nDestinatário: [NOME/CARGO]\nAssunto: [TEMA PRINCIPAL]\nObjetivo: [informar/solicitar/agradecer/resolver]\nTom: [formal/cordial/urgente]\n\n📝 **ESTRUTURA:**\n- Saudação adequada ao contexto\n- Introdução clara do motivo\n- Desenvolvimento organizado\n- Call-to-action específico\n- Fechamento profissional\n\n⏰ Urgência: [baixa/média/alta]\n🎯 Resultado esperado: [DESCREVER]",
+    "category": "Atendimento",
+    "tags": [
+      "email",
+      "comunicação",
+      "profissional",
+      "negócios"
+    ],
+    "tone": "Formal",
+    "createdAt": "2025-09-16T03:16:23.279Z",
+    "updatedAt": "2025-09-16T03:16:23.279Z",
+    "isExample": true,
+    "usageCount": 0
+  },
+  {
+    "id": "mflze6pbo21jiswpslb",
+    "title": "Brainstorm de Ideias Criativas",
+    "description": "Gera múltiplas ideias criativas para projetos, campanhas ou soluções",
+    "content": "Faça um brainstorm criativo sobre [TEMA/DESAFIO] gerando:\n\n💡 **10 IDEIAS PRINCIPAIS:**\n(Numere de 1-10, seja específico e criativo)\n\n🎨 **3 CONCEITOS INOVADORES:**\n- Ideia disruptiva 1: [explicação]\n- Abordagem inusitada 2: [explicação] \n- Solução criativa 3: [explicação]\n\n🎯 **CRITÉRIOS:**\n- Público-alvo: [DEFINIR]\n- Orçamento: [baixo/médio/alto]\n- Prazo: [DEFINIR]\n- Objetivo: [DEFINIR]\n\nPense fora da caixa e explore diferentes ângulos!",
+    "category": "Criatividade",
+    "tags": [
+      "brainstorm",
+      "ideias",
+      "criatividade",
+      "inovação"
+    ],
+    "tone": "Criativo",
+    "createdAt": "2025-09-16T03:16:23.279Z",
+    "updatedAt": "2025-09-16T03:16:23.279Z",
+    "isExample": true,
+    "usageCount": 0
+  }
+]

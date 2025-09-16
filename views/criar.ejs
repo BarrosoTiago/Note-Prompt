@@ -1,0 +1,56 @@
+<!-- Cabeçalho da página -->
+<div class="criar-header">
+    <div class="container">
+        <div class="header-content">
+            <h1>➕ Criar Novo Prompt</h1>
+            <p>Adicione um novo prompt à sua biblioteca pessoal</p>
+        </div>
+    </div>
+</div>
+
+<!-- Formulário de Criação -->
+<div class="criar-content">
+    <div class="container">
+        <div class="criar-layout">
+            
+            <!-- Formulário Principal -->
+            <main class="form-section">
+                <form id="promptForm" class="prompt-form">
+                    <!-- Informações Básicas -->
+                    <div class="form-section-card">
+                        <h2>📝 Informações Básicas</h2>
+                        
+                        <div class="form-group">
+                            <label for="title" class="form-label">
+                                Título do Prompt *
+                                <span class="label-hint">Um nome descritivo para identificar seu prompt</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="title" 
+                                name="title" 
+                                class="form-input"
+                                placeholder="Ex: Resumo de Artigo Científico"
+                                required
+                            >
+                            <div class="form-error" id="title-error"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="description" class="form-label">
+                                Descrição
+                                <span class="label-hint">Explique brevemente o que este prompt faz</span>
+                            </label>
+                            <textarea 
+                                id="description" 
+                                name="description" 
+                                class="form-textarea"
+                                rows="2"
+                                placeholder="Ex: Cria resumos concisos de artigos mantendo os pontos principais"
+                            ></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Conteúdo do Prompt -->
+                    <div class="form-section-card">
+                        <h2>

@@ -1,0 +1,805 @@
+<!-- Cabeçalho da Biblioteca -->
+<div class="biblioteca-header">
+    <div class="container">
+        <div class="header-content">
+            <div class="header-info">
+                <h1>📚 Minha Biblioteca</h1>
+                <p class="subtitle">
+                    <%= prompts.length %> prompt<%= prompts.length !== 1 ? 's' : '' %> 
+                    <% if (filters.search || filters.category || filters.tone || filters.tag) { %>
+                        encontrado<%= prompts.length !== 1 ? 's' : '' %>
+                    <% } else { %>
+                        na sua coleção
+                    <% } %>
+                </p>
+            </div>
+            <div class="header-actions">
+                <a href="/criar" class="btn btn-primary">
+                    <i data-lucide="plus-circle"></i>
+                    Novo Prompt
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filtros e Busca -->
+<div class="biblioteca-filters">
+    <div class="container">
+        <form class="filters-form" method="GET" action="/biblioteca">
+            <div class="filters-row">
+                <!-- Busca -->
+                <div class="search-box">
+                    <i data-lucide="search"></i>
+                    <input 
+                        type="text" 
+                        name="search" 
+                        placeholder="Buscar prompts..." 
+                        value="<%= filters.search %>"
+                        class="search-input"
+                    >
+                </div>
+                
+                <!-- Filtro por categoria -->
+                <select name="category" class="filter-select">
+                    <option value="">Todas as categorias</option>
+                    <% categories.forEach(function(category) { %>
+                        <option value="<%= category.name %>" 
+                                <%= filters.category === category.name ? 'selected' : '' %>>
+                            <%= category.icon %> <%= category.name %>
+                        </option>
+                    <% }); %>
+                </select>
+                
+                <!-- Filtro por tom -->
+                <select name="tone" class="filter-select">
+                    <option value="">Todos os tons</option>
+                    <% availableTones.forEach(function(tone) { %>
+                        <option value="<%= tone %>" 
+                                <%= filters.tone === tone ? 'selected' : '' %>>
+                            <%= tone %>
+                        </option>
+                    <% }); %>
+                </select>
+                
+                <!-- Ordenação -->
+                <select name="sortBy" class="filter-select">
+                    <option value="updatedAt" <%= filters.sortBy === 'updatedAt' ? 'selected' : '' %>>
+                        Modificação
+                    </option>
+                    <option value="createdAt" <%= filters.sortBy === 'createdAt' ? 'selected' : '' %>>
+                        Criação
+                    </option>
+                    <option value="title" <%= filters.sortBy === 'title' ? 'selected' : '' %>>
+                        Título
+                    </option>
+                    <option value="usageCount" <%= filters.sortBy === 'usageCount' ? 'selected' : '' %>>
+                        Mais usados
+                    </option>
+                </select>
+                
+                <button type="submit" class="btn btn-secondary">
+                    <i data-lucide="filter"></i>
+                    Filtrar
+                </button>
+                
+                <% if (filters.search || filters.category || filters.tone) { %>
+                    <a href="/biblioteca" class="btn btn-ghost">
+                        <i data-lucide="x"></i>
+                        Limpar
+                    </a>
+                <% } %>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Conteúdo Principal -->
+<div class="biblioteca-content">
+    <div class="container">
+        <div class="biblioteca-layout">
+            
+            <!-- Sidebar com Estatísticas -->
+            <aside class="biblioteca-sidebar">
+                <div class="sidebar-section">
+                    <h3>📊 Estatísticas</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <strong><%= stats.total %></strong>
+                            <span>Total</span>
+                        </div>
+                        <div class="stat-item">
+                            <strong><%= stats.totalUsage %></strong>
+                            <span>Usos</span>
+                        </div>
+                        <div class="stat-item">
+                            <strong><%= Object.keys(stats.categories).length %></strong>
+                            <span>Categorias</span>
+                        </div>
+                        <div class="stat-item">
+                            <strong><%= Object.keys(stats.tags).length %></strong>
+                            <span>Tags</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <h3>🏷️ Categorias</h3>
+                    <div class="categories-list">
+                        <% Object.entries(stats.categories).forEach(function([category, count]) { %>
+                            <a href="/biblioteca?category=<%= encodeURIComponent(category) %>" 
+                               class="category-link <%= filters.category === category ? 'active' : '' %>">
+                                <span class="category-name"><%= category %></span>
+                                <span class="category-count"><%= count %></span>
+                            </a>
+                        <% }); %>
+                    </div>
+                </div>
+                
+                <% if (Object.keys(stats.tags).length > 0) { %>
+                <div class="sidebar-section">
+                    <h3>🔖 Tags Populares</h3>
+                    <div class="tags-cloud">
+                        <% Object.entries(stats.tags)
+                           .sort((a, b) => b[1] - a[1])
+                           .slice(0, 10)
+                           .forEach(function([tag, count]) { %>
+                            <a href="/biblioteca?tag=<%= encodeURIComponent(tag) %>" 
+                               class="tag-link">
+                                <%= tag %> (<%= count %>)
+                            </a>
+                        <% }); %>
+                    </div>
+                </div>
+                <% } %>
+            </aside>
+            
+            <!-- Lista de Prompts -->
+            <main class="biblioteca-main">
+                <% if (prompts.length === 0) { %>
+                    <!-- Estado vazio -->
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i data-lucide="file-text"></i>
+                        </div>
+                        <h3>Nenhum prompt encontrado</h3>
+                        <% if (filters.search || filters.category || filters.tone) { %>
+                            <p>Tente ajustar os filtros ou fazer uma nova busca.</p>
+                            <a href="/biblioteca" class="btn btn-secondary">
+                                Ver todos os prompts
+                            </a>
+                        <% } else { %>
+                            <p>Comece criando seu primeiro prompt!</p>
+                            <a href="/criar" class="btn btn-primary">
+                                <i data-lucide="plus-circle"></i>
+                                Criar Primeiro Prompt
+                            </a>
+                        <% } %>
+                    </div>
+                <% } else { %>
+                    <!-- Grid de Cards de Prompts -->
+                    <div class="prompts-grid">
+                        <% prompts.forEach(function(prompt) { %>
+                            <div class="prompt-card" data-prompt-id="<%= prompt.id %>">
+                                <div class="prompt-header">
+                                    <h3 class="prompt-title">
+                                        <% if (prompt.isExample) { %>
+                                            <span class="example-badge">Exemplo</span>
+                                        <% } %>
+                                        <%= prompt.title %>
+                                    </h3>
+                                    <div class="prompt-actions">
+                                        <button class="action-btn" 
+                                                onclick="copyPrompt('<%= prompt.id %>', `<%= prompt.content.replace(/`/g, '\\`').replace(/\$/g, '\\$') %>`)"
+                                                title="Copiar prompt">
+                                            <i data-lucide="copy"></i>
+                                        </button>
+                                        <button class="action-btn" 
+                                                onclick="editPrompt('<%= prompt.id %>')"
+                                                title="Editar prompt">
+                                            <i data-lucide="edit-3"></i>
+                                        </button>
+                                        <% if (!prompt.isExample) { %>
+                                        <button class="action-btn delete-btn" 
+                                                onclick="deletePrompt('<%= prompt.id %>', '<%= prompt.title %>')"
+                                                title="Excluir prompt">
+                                            <i data-lucide="trash-2"></i>
+                                        </button>
+                                        <% } %>
+                                    </div>
+                                </div>
+                                
+                                <% if (prompt.description) { %>
+                                <p class="prompt-description"><%= prompt.description %></p>
+                                <% } %>
+                                
+                                <div class="prompt-preview">
+                                    <code><%= prompt.content.substring(0, 150) %><%= prompt.content.length > 150 ? '...' : '' %></code>
+                                </div>
+                                
+                                <div class="prompt-meta">
+                                    <div class="prompt-category" 
+                                         style="--category-color: <%= categories.find(c => c.name === prompt.category)?.color || '#667eea' %>">
+                                        <%= prompt.category %>
+                                    </div>
+                                    <span class="prompt-tone"><%= prompt.tone %></span>
+                                </div>
+                                
+                                <% if (prompt.tags && prompt.tags.length > 0) { %>
+                                <div class="prompt-tags">
+                                    <% prompt.tags.slice(0, 3).forEach(function(tag) { %>
+                                        <span class="tag">#<%= tag %></span>
+                                    <% }); %>
+                                    <% if (prompt.tags.length > 3) { %>
+                                        <span class="tag-more">+<%= prompt.tags.length - 3 %></span>
+                                    <% } %>
+                                </div>
+                                <% } %>
+                                
+                                <div class="prompt-footer">
+                                    <div class="prompt-stats">
+                                        <span title="Vezes usado">
+                                            <i data-lucide="activity"></i>
+                                            <%= prompt.usageCount || 0 %>
+                                        </span>
+                                        <span title="Última modificação">
+                                            <i data-lucide="clock"></i>
+                                            <%= new Date(prompt.updatedAt).toLocaleDateString('pt-BR') %>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } %>
+            </main>
+        </div>
+    </div>
+</div>
+
+<!-- CSS específico da página -->
+<style>
+/* ===== BIBLIOTECA HEADER ===== */
+.biblioteca-header {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 40px 0;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.header-info h1 {
+    font-size: 2.5em;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    opacity: 0.9;
+    font-size: 1.1em;
+}
+
+/* ===== FILTROS ===== */
+.biblioteca-filters {
+    background: white;
+    border-bottom: 1px solid var(--gray-200);
+    padding: 20px 0;
+    position: sticky;
+    top: var(--header-height);
+    z-index: 50;
+    box-shadow: var(--shadow-sm);
+}
+
+.filters-row {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.search-box {
+    position: relative;
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-400);
+    width: 18px;
+    height: 18px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: 1px solid var(--gray-300);
+    border-radius: 8px;
+    font-size: 14px;
+    transition: var(--transition);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.filter-select {
+    padding: 12px 16px;
+    border: 1px solid var(--gray-300);
+    border-radius: 8px;
+    background: white;
+    font-size: 14px;
+    min-width: 150px;
+    cursor: pointer;
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--gray-600);
+    border: 1px solid var(--gray-300);
+}
+
+.btn-ghost:hover {
+    background: var(--gray-50);
+}
+
+/* ===== LAYOUT PRINCIPAL ===== */
+.biblioteca-content {
+    padding: 30px 0;
+}
+
+.biblioteca-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 40px;
+    align-items: start;
+}
+
+/* ===== SIDEBAR ===== */
+.biblioteca-sidebar {
+    position: sticky;
+    top: 150px;
+}
+
+.sidebar-section {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--gray-200);
+}
+
+.sidebar-section h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 10px;
+    background: var(--gray-50);
+    border-radius: 8px;
+}
+
+.stat-item strong {
+    display: block;
+    font-size: 1.5em;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.stat-item span {
+    font-size: 12px;
+    color: var(--gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.categories-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.category-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    text-decoration: none;
+    color: var(--gray-700);
+    border-radius: 6px;
+    transition: var(--transition);
+    font-size: 14px;
+}
+
+.category-link:hover,
+.category-link.active {
+    background: var(--primary);
+    color: white;
+}
+
+.category-count {
+    background: var(--gray-200);
+    color: var(--gray-600);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.category-link.active .category-count {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.tag-link {
+    display: inline-block;
+    padding: 4px 8px;
+    background: var(--gray-100);
+    color: var(--gray-600);
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 12px;
+    transition: var(--transition);
+}
+
+.tag-link:hover {
+    background: var(--primary);
+    color: white;
+}
+
+/* ===== PROMPTS GRID ===== */
+.prompts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+.prompt-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--gray-200);
+    transition: var(--transition);
+    position: relative;
+}
+
+.prompt-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.prompt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    gap: 10px;
+}
+
+.prompt-title {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: var(--gray-800);
+    line-height: 1.3;
+    flex: 1;
+}
+
+.example-badge {
+    display: inline-block;
+    background: var(--warning);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin-right: 8px;
+}
+
+.prompt-actions {
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.prompt-card:hover .prompt-actions {
+    opacity: 1;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--gray-100);
+    border: none;
+    border-radius: 6px;
+    color: var(--gray-600);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.action-btn:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.delete-btn:hover {
+    background: var(--error);
+}
+
+.prompt-description {
+    color: var(--gray-600);
+    font-size: 14px;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.prompt-preview {
+    background: var(--gray-50);
+    border-left: 3px solid var(--primary);
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+.prompt-preview code {
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 12px;
+    color: var(--gray-700);
+    line-height: 1.4;
+}
+
+.prompt-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.prompt-category {
+    background: var(--category-color, var(--primary));
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.prompt-tone {
+    color: var(--gray-500);
+    font-size: 12px;
+    padding: 4px 8px;
+    background: var(--gray-100);
+    border-radius: 4px;
+}
+
+.prompt-tags {
+    margin-bottom: 12px;
+}
+
+.tag {
+    display: inline-block;
+    background: var(--gray-100);
+    color: var(--gray-600);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+
+.tag-more {
+    color: var(--gray-500);
+    font-size: 11px;
+}
+
+.prompt-footer {
+    border-top: 1px solid var(--gray-100);
+    padding-top: 12px;
+}
+
+.prompt-stats {
+    display: flex;
+    gap: 15px;
+    font-size: 12px;
+    color: var(--gray-500);
+}
+
+.prompt-stats span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.prompt-stats i {
+    width: 12px;
+    height: 12px;
+}
+
+/* ===== ESTADO VAZIO ===== */
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.empty-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--gray-100);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+.empty-icon i {
+    width: 40px;
+    height: 40px;
+    color: var(--gray-400);
+}
+
+.empty-state h3 {
+    color: var(--gray-700);
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    color: var(--gray-500);
+    margin-bottom: 25px;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 1024px) {
+    .biblioteca-layout {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .biblioteca-sidebar {
+        position: static;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .filters-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-box {
+        min-width: auto;
+    }
+    
+    .filter-select {
+        min-width: auto;
+    }
+    
+    .prompts-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .sidebar-section {
+        margin-bottom: 15px;
+    }
+}
+</style>
+
+<!-- JavaScript específico da página -->
+<script>
+// Função para copiar prompt
+async function copyPrompt(promptId, content) {
+    try {
+        await copyToClipboard(content);
+        
+        // Incrementar contador de uso
+        fetch(`/api/prompts/${promptId}/use`, { method: 'POST' })
+            .catch(err => console.error('Erro ao incrementar uso:', err));
+            
+    } catch (error) {
+        console.error('Erro ao copiar prompt:', error);
+    }
+}
+
+// Função para editar prompt
+function editPrompt(promptId) {
+    window.location.href = `/editar/${promptId}`;
+}
+
+// Função para deletar prompt
+async function deletePrompt(promptId, promptTitle) {
+    if (!confirm(`Tem certeza que deseja excluir o prompt "${promptTitle}"?`)) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/prompts/${promptId}`, {
+            method: 'DELETE'
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showNotification('✅ Prompt excluído com sucesso!', 'success');
+            
+            // Remover card da tela
+            const card = document.querySelector(`[data-prompt-id="${promptId}"]`);
+            if (card) {
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                    card.remove();
+                    
+                    // Se não há mais prompts, recarregar página
+                    if (document.querySelectorAll('.prompt-card').length === 0) {
+                        setTimeout(() => window.location.reload(), 1000);
+                    }
+                }, 300);
+            }
+        } else {
+            throw new Error(result.message);
+        }
+    } catch (error) {
+        console.error('Erro ao excluir prompt:', error);
+        showNotification('❌ Erro ao excluir prompt', 'error');
+    }
+}
+
+// Auto-submit do formulário de filtros quando mudar seleção
+document.addEventListener('DOMContentLoaded', function() {
+    const filterSelects = document.querySelectorAll('.filter-select');
+    
+    filterSelects.forEach(select => {
+        select.addEventListener('change', function() {
+            this.form.submit();
+        });
+    });
+    
+    // Focus na busca se veio da URL
+    const searchInput = document.querySelector('.search-input');
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('focus') === 'search') {
+        searchInput.focus();
+    }
+});
+</script>

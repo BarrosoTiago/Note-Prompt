@@ -25,6 +25,7 @@
     "express-ejs-layouts": "^2.5.1"
   },
   "devDependencies": {
+    "better-docs": "^2.7.3",
     "nodemon": "^3.0.1"
   }
 }
