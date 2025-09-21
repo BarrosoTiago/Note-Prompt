@@ -1,0 +1,169 @@
+<!-- Página de Erro -->
+<div class="error-container">
+    <div class="container">
+        <div class="error-content">
+            <div class="error-icon">
+                <% if (error && error.status === 404) { %>
+                    <i data-lucide="file-question"></i>
+                <% } else { %>
+                    <i data-lucide="alert-circle"></i>
+                <% } %>
+            </div>
+            
+            <div class="error-info">
+                <h1 class="error-title">
+                    <% if (error && error.status) { %>
+                        <%= error.status %>
+                    <% } else { %>
+                        Oops!
+                    <% } %>
+                </h1>
+                
+                <h2 class="error-message">
+                    <%= message || 'Algo deu errado' %>
+                </h2>
+                
+                <% if (error && error.status === 404) { %>
+                    <p class="error-description">
+                        A página que você procura não foi encontrada. 
+                        Ela pode ter sido movida, removida ou você digitou o endereço incorretamente.
+                    </p>
+                <% } else { %>
+                    <p class="error-description">
+                        Ocorreu um erro inesperado. Nossa equipe foi notificada e estamos trabalhando para resolver.
+                    </p>
+                <% } %>
+                
+                <div class="error-actions">
+                    <a href="/" class="btn btn-primary">
+                        <i data-lucide="home"></i>
+                        Voltar ao Início
+                    </a>
+                    <a href="/biblioteca" class="btn btn-secondary">
+                        <i data-lucide="library"></i>
+                        Minha Biblioteca
+                    </a>
+                </div>
+                
+                <div class="error-help">
+                    <p>Precisa de ajuda? Tente:</p>
+                    <ul>
+                        <li><a href="javascript:history.back()">Voltar à página anterior</a></li>
+                        <li><a href="javascript:location.reload()">Atualizar a página</a></li>
+                        <li><a href="/criar">Criar um novo prompt</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.error-container {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 0;
+}
+
+.error-content {
+    text-align: center;
+    max-width: 600px;
+}
+
+.error-icon {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 30px;
+    background: var(--gray-100);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.error-icon i {
+    width: 60px;
+    height: 60px;
+    color: var(--gray-400);
+}
+
+.error-title {
+    font-size: 4em;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 15px;
+    line-height: 1;
+}
+
+.error-message {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 20px;
+}
+
+.error-description {
+    color: var(--gray-600);
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+.error-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+
+.error-help {
+    padding-top: 30px;
+    border-top: 1px solid var(--gray-200);
+}
+
+.error-help p {
+    color: var(--gray-600);
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+.error-help ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.error-help a {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.error-help a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .error-title {
+        font-size: 3em;
+    }
+    
+    .error-message {
+        font-size: 1.3em;
+    }
+    
+    .error-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .error-actions .btn {
+        width: 200px;
+    }
+}
+</style>

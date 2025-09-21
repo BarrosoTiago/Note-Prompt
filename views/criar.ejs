@@ -53,4 +53,1068 @@
                     
                     <!-- Conteúdo do Prompt -->
                     <div class="form-section-card">
-                        <h2>
+                        <h2>🎯 Conteúdo do Prompt</h2>
+                        
+                        <div class="form-group">
+                            <label for="content" class="form-label">
+                                Prompt Completo *
+                                <span class="label-hint">Digite o texto completo do seu prompt. Use [VARIÁVEL] para partes personalizáveis</span>
+                            </label>
+                            <div class="textarea-wrapper">
+                                <textarea 
+                                    id="content" 
+                                    name="content" 
+                                    class="form-textarea large"
+                                    rows="8"
+                                    placeholder="Digite seu prompt aqui...&#10;&#10;Exemplo:&#10;Resuma o seguinte texto em [NÚMERO] pontos principais:&#10;&#10;[TEXTO PARA RESUMIR]&#10;&#10;Formato:&#10;- Use marcadores&#10;- Mantenha o tom [FORMAL/CASUAL]&#10;- Máximo de [LIMITE] palavras por ponto"
+                                    required
+                                ></textarea>
+                                <div class="textarea-info">
+                                    <span class="char-count">0 caracteres</span>
+                                    <button type="button" class="btn btn-ghost btn-small" onclick="expandTextarea()">
+                                        <i data-lucide="maximize-2"></i>
+                                        Expandir
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-error" id="content-error"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Categorização -->
+                    <div class="form-section-card">
+                        <h2>🏷️ Organização</h2>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="category" class="form-label">
+                                    Categoria
+                                </label>
+                                <select id="category" name="category" class="form-select">
+                                    <% categories.forEach(function(category) { %>
+                                        <option value="<%= category.name %>">
+                                            <%= category.icon %> <%= category.name %>
+                                        </option>
+                                    <% }); %>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="tone" class="form-label">
+                                    Tom
+                                </label>
+                                <select id="tone" name="tone" class="form-select">
+                                    <% availableTones.forEach(function(tone) { %>
+                                        <option value="<%= tone %>"><%= tone %></option>
+                                    <% }); %>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="tags" class="form-label">
+                                Tags
+                                <span class="label-hint">Palavras-chave para facilitar a busca (separadas por vírgula)</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="tags" 
+                                name="tags" 
+                                class="form-input"
+                                placeholder="Ex: resumo, acadêmico, pesquisa, científico"
+                            >
+                            <div class="tags-preview" id="tagsPreview"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Ações do Formulário -->
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="previewPrompt()">
+                            <i data-lucide="eye"></i>
+                            Visualizar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i data-lucide="save"></i>
+                            Salvar Prompt
+                        </button>
+                    </div>
+                </form>
+            </main>
+            
+            <!-- Sidebar com Dicas -->
+            <aside class="tips-sidebar">
+                <div class="tips-section">
+                    <h3>💡 Dicas para Prompts Eficazes</h3>
+                    <div class="tips-list">
+                        <div class="tip-item">
+                            <strong>Seja específico:</strong>
+                            <p>Quanto mais detalhado, melhores os resultados</p>
+                        </div>
+                        <div class="tip-item">
+                            <strong>Use variáveis:</strong>
+                            <p>Coloque [VARIÁVEL] para partes personalizáveis</p>
+                        </div>
+                        <div class="tip-item">
+                            <strong>Defina o formato:</strong>
+                            <p>Especifique como quer a resposta estruturada</p>
+                        </div>
+                        <div class="tip-item">
+                            <strong>Inclua contexto:</strong>
+                            <p>Forneça background relevante quando necessário</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tips-section">
+                    <h3>📋 Exemplos de Variáveis</h3>
+                    <div class="examples-list">
+                        <code>[TEXTO]</code> - Conteúdo a ser processado<br>
+                        <code>[TEMA]</code> - Assunto principal<br>
+                        <code>[TOM]</code> - Formal, casual, técnico...<br>
+                        <code>[PÚBLICO]</code> - Audiência alvo<br>
+                        <code>[FORMATO]</code> - Estrutura desejada
+                    </div>
+                </div>
+                
+                <div class="tips-section">
+                    <h3>🎯 Templates Rápidos</h3>
+                    <div class="templates-list">
+                        <button type="button" class="template-btn" onclick="useTemplate('resumo')">
+                            📚 Resumo de Texto
+                        </button>
+                        <button type="button" class="template-btn" onclick="useTemplate('email')">
+                            ✉️ E-mail Profissional
+                        </button>
+                        <button type="button" class="template-btn" onclick="useTemplate('post')">
+                            📱 Post para Redes Sociais
+                        </button>
+                        <button type="button" class="template-btn" onclick="useTemplate('brainstorm')">
+                            💡 Brainstorm de Ideias
+                        </button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Preview -->
+<div id="previewModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>👁️ Preview do Prompt</h2>
+            <button type="button" class="modal-close" onclick="closePreview()">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="preview-card">
+                <div class="preview-header">
+                    <h3 id="previewTitle">Título do Prompt</h3>
+                    <div class="preview-meta">
+                        <span id="previewCategory" class="preview-category">Categoria</span>
+                        <span id="previewTone" class="preview-tone">Tom</span>
+                    </div>
+                </div>
+                <div id="previewDescription" class="preview-description"></div>
+                <div class="preview-content">
+                    <pre id="previewContentText"></pre>
+                </div>
+                <div id="previewTags" class="preview-tags"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closePreview()">
+                Fechar
+            </button>
+            <button type="button" class="btn btn-primary" onclick="copyPreviewContent()">
+                <i data-lucide="copy"></i>
+                Copiar Prompt
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- CSS específico da página -->
+<style>
+/* ===== HEADER ===== */
+.criar-header {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 40px 0;
+    text-align: center;
+}
+
+.criar-header h1 {
+    font-size: 2.5em;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.criar-header p {
+    opacity: 0.9;
+    font-size: 1.1em;
+}
+
+/* ===== LAYOUT PRINCIPAL ===== */
+.criar-content {
+    padding: 40px 0;
+}
+
+.criar-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 40px;
+    align-items: start;
+}
+
+/* ===== FORMULÁRIO ===== */
+.prompt-form {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.form-section-card {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-sm);
+}
+
+.form-section-card h2 {
+    font-size: 1.3em;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-label {
+    display: block;
+    font-weight: 500;
+    color: var(--gray-700);
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.label-hint {
+    display: block;
+    font-weight: 400;
+    color: var(--gray-500);
+    font-size: 12px;
+    margin-top: 2px;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--gray-300);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: var(--transition);
+    background: white;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 80px;
+    font-family: 'Monaco', 'Consolas', monospace;
+    line-height: 1.5;
+}
+
+.form-textarea.large {
+    min-height: 200px;
+}
+
+.textarea-wrapper {
+    position: relative;
+}
+
+.textarea-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--gray-500);
+}
+
+.char-count {
+    font-weight: 500;
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.tags-preview {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.tag-preview {
+    display: inline-block;
+    background: var(--gray-100);
+    color: var(--gray-700);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.form-error {
+    color: var(--error);
+    font-size: 12px;
+    margin-top: 5px;
+    display: none;
+}
+
+.form-error.show {
+    display: block;
+}
+
+/* ===== AÇÕES DO FORMULÁRIO ===== */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    padding: 30px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ===== SIDEBAR DE DICAS ===== */
+.tips-sidebar {
+    position: sticky;
+    top: 120px;
+}
+
+.tips-section {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 20px;
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-sm);
+}
+
+.tips-section h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.tips-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.tip-item {
+    padding: 12px;
+    background: var(--gray-50);
+    border-radius: 8px;
+    border-left: 3px solid var(--primary);
+}
+
+.tip-item strong {
+    color: var(--gray-800);
+    display: block;
+    margin-bottom: 4px;
+    font-size: 13px;
+}
+
+.tip-item p {
+    color: var(--gray-600);
+    font-size: 12px;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.examples-list {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--gray-600);
+}
+
+.examples-list code {
+    background: var(--gray-50);
+    color: var(--primary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 11px;
+}
+
+.templates-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.template-btn {
+    width: 100%;
+    text-align: left;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    padding: 10px 12px;
+    border-radius: 6px;
+    color: var(--gray-700);
+    font-size: 13px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.template-btn:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+/* ===== MODAL DE PREVIEW ===== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-xl);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 30px;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.modal-header h2 {
+    font-size: 1.3em;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    color: var(--gray-400);
+    transition: var(--transition);
+}
+
+.modal-close:hover {
+    color: var(--gray-600);
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    padding: 20px 30px;
+    border-top: 1px solid var(--gray-200);
+    background: var(--gray-50);
+}
+
+/* ===== PREVIEW CARD ===== */
+.preview-card {
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.preview-header {
+    background: var(--gray-50);
+    padding: 20px;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.preview-header h3 {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 10px;
+}
+
+.preview-meta {
+    display: flex;
+    gap: 10px;
+}
+
+.preview-category {
+    background: var(--primary);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.preview-tone {
+    background: var(--gray-200);
+    color: var(--gray-700);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.preview-description {
+    padding: 15px 20px;
+    color: var(--gray-600);
+    border-bottom: 1px solid var(--gray-200);
+    font-style: italic;
+}
+
+.preview-content {
+    padding: 20px;
+    background: var(--gray-50);
+}
+
+.preview-content pre {
+    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--gray-800);
+    white-space: pre-wrap;
+    margin: 0;
+}
+
+.preview-tags {
+    padding: 15px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.preview-tag {
+    background: var(--gray-100);
+    color: var(--gray-600);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 1024px) {
+    .criar-layout {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .tips-sidebar {
+        position: static;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .modal {
+        padding: 10px;
+    }
+    
+    .modal-content {
+        max-height: 95vh;
+    }
+    
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 20px;
+    }
+}
+</style>
+
+<!-- JavaScript específico da página -->
+<script>
+// ===== VARIÁVEIS GLOBAIS =====
+let previewContent = '';
+
+// ===== INICIALIZAÇÃO =====
+document.addEventListener('DOMContentLoaded', function() {
+    initializeForm();
+    setupEventListeners();
+    console.log('📝 Página Criar Prompt inicializada');
+});
+
+function initializeForm() {
+    // Auto-resize textarea
+    const contentTextarea = document.getElementById('content');
+    contentTextarea.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+        updateCharCount();
+    });
+    
+    // Preview de tags
+    const tagsInput = document.getElementById('tags');
+    tagsInput.addEventListener('input', updateTagsPreview);
+    
+    // Validação em tempo real
+    setupRealTimeValidation();
+}
+
+function setupEventListeners() {
+    // Submit do formulário
+    document.getElementById('promptForm').addEventListener('submit', handleSubmit);
+    
+    // Teclas de atalho
+    document.addEventListener('keydown', function(e) {
+        // Ctrl/Cmd + Enter = Preview
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault();
+            previewPrompt();
+        }
+        
+        // Esc = Fechar modal
+        if (e.key === 'Escape') {
+            closePreview();
+        }
+    });
+}
+
+// ===== CONTADORES E VALIDAÇÃO =====
+function updateCharCount() {
+    const textarea = document.getElementById('content');
+    const counter = document.querySelector('.char-count');
+    const count = textarea.value.length;
+    
+    counter.textContent = `${count} caracteres`;
+    
+    // Mudar cor baseado no tamanho
+    if (count < 50) {
+        counter.style.color = 'var(--warning)';
+    } else if (count > 2000) {
+        counter.style.color = 'var(--error)';
+    } else {
+        counter.style.color = 'var(--gray-500)';
+    }
+}
+
+function updateTagsPreview() {
+    const tagsInput = document.getElementById('tags');
+    const preview = document.getElementById('tagsPreview');
+    const value = tagsInput.value.trim();
+    
+    if (!value) {
+        preview.innerHTML = '';
+        return;
+    }
+    
+    const tags = value.split(',').map(tag => tag.trim()).filter(tag => tag);
+    
+    preview.innerHTML = tags.map(tag => 
+        `<span class="tag-preview">#${tag}</span>`
+    ).join('');
+}
+
+function setupRealTimeValidation() {
+    const titleInput = document.getElementById('title');
+    const contentTextarea = document.getElementById('content');
+    
+    titleInput.addEventListener('blur', () => validateField('title'));
+    contentTextarea.addEventListener('blur', () => validateField('content'));
+}
+
+function validateField(fieldName) {
+    const field = document.getElementById(fieldName);
+    const error = document.getElementById(`${fieldName}-error`);
+    let isValid = true;
+    let message = '';
+    
+    if (fieldName === 'title') {
+        if (!field.value.trim()) {
+            isValid = false;
+            message = 'Título é obrigatório';
+        } else if (field.value.length < 3) {
+            isValid = false;
+            message = 'Título deve ter pelo menos 3 caracteres';
+        }
+    } else if (fieldName === 'content') {
+        if (!field.value.trim()) {
+            isValid = false;
+            message = 'Conteúdo do prompt é obrigatório';
+        } else if (field.value.length < 10) {
+            isValid = false;
+            message = 'Conteúdo deve ter pelo menos 10 caracteres';
+        }
+    }
+    
+    if (!isValid) {
+        error.textContent = message;
+        error.classList.add('show');
+        field.style.borderColor = 'var(--error)';
+    } else {
+        error.classList.remove('show');
+        field.style.borderColor = 'var(--gray-300)';
+    }
+    
+    return isValid;
+}
+
+// ===== TEMPLATES =====
+const templates = {
+    resumo: {
+        title: "Resumo de Texto",
+        description: "Cria resumos concisos mantendo os pontos principais",
+        content: `Resuma o seguinte texto em [NÚMERO] pontos principais:
+
+[TEXTO PARA RESUMIR]
+
+Instruções:
+- Use marcadores para cada ponto
+- Mantenha o tom [FORMAL/CASUAL]
+- Destaque as informações mais importantes
+- Máximo de [LIMITE] palavras por ponto`,
+        category: "Estudos",
+        tone: "Formal",
+        tags: "resumo, texto, pontos principais"
+    },
+    email: {
+        title: "E-mail Profissional",
+        description: "Redige e-mails profissionais para diferentes contextos",
+        content: `Redija um e-mail profissional com os seguintes parâmetros:
+
+Destinatário: [NOME/CARGO]
+Assunto: [TEMA PRINCIPAL]
+Objetivo: [informar/solicitar/agradecer/resolver]
+Tom: [formal/cordial/urgente]
+
+Estrutura:
+- Saudação adequada
+- Introdução clara do motivo
+- Desenvolvimento organizado
+- Call-to-action específico
+- Fechamento profissional
+
+Contexto adicional: [INFORMAÇÕES RELEVANTES]`,
+        category: "Atendimento",
+        tone: "Formal",
+        tags: "email, comunicação, profissional"
+    },
+    post: {
+        title: "Post para Redes Sociais",
+        description: "Cria posts envolventes para diferentes plataformas",
+        content: `Crie um post para [PLATAFORMA] sobre [TEMA/PRODUTO]:
+
+📱 HOOK inicial (primeira linha que prende atenção)
+💡 Desenvolvimento do tema (2-3 frases explicativas)
+🎯 Call-to-action no final
+
+Especificações:
+- Tom: [casual/profissional/divertido]
+- Público-alvo: [DEFINIR]
+- Objetivo: [engajar/vender/informar/educar]
+- Incluir emojis relevantes
+- 5-7 hashtags populares
+- Máximo de [LIMITE] palavras`,
+        category: "Marketing",
+        tone: "Criativo",
+        tags: "redes sociais, post, marketing, engajamento"
+    },
+    brainstorm: {
+        title: "Brainstorm de Ideias",
+        description: "Gera múltiplas ideias criativas para projetos",
+        content: `Faça um brainstorm criativo sobre [TEMA/DESAFIO]:
+
+💡 10 IDEIAS PRINCIPAIS:
+(Numere de 1-10, seja específico e criativo)
+
+🎨 3 CONCEITOS INOVADORES:
+- Ideia disruptiva 1: [explicação]
+- Abordagem inusitada 2: [explicação]
+- Solução criativa 3: [explicação]
+
+🎯 CRITÉRIOS:
+- Público-alvo: [DEFINIR]
+- Orçamento: [baixo/médio/alto]
+- Prazo: [DEFINIR]
+- Objetivo: [DEFINIR]
+
+Pense fora da caixa e explore diferentes ângulos!`,
+        category: "Criatividade",
+        tone: "Criativo",
+        tags: "brainstorm, ideias, criatividade, inovação"
+    }
+};
+
+function useTemplate(templateName) {
+    const template = templates[templateName];
+    if (!template) return;
+    
+    // Confirmar se quer sobrescrever
+    const hasContent = document.getElementById('title').value || 
+                      document.getElementById('content').value;
+    
+    if (hasContent) {
+        if (!confirm('Isso substituirá o conteúdo atual. Continuar?')) {
+            return;
+        }
+    }
+    
+    // Preencher formulário
+    document.getElementById('title').value = template.title;
+    document.getElementById('description').value = template.description;
+    document.getElementById('content').value = template.content;
+    document.getElementById('category').value = template.category;
+    document.getElementById('tone').value = template.tone;
+    document.getElementById('tags').value = template.tags;
+    
+    // Atualizar previews
+    updateCharCount();
+    updateTagsPreview();
+    
+    // Animar campo de conteúdo
+    const contentField = document.getElementById('content');
+    contentField.style.height = 'auto';
+    contentField.style.height = contentField.scrollHeight + 'px';
+    contentField.focus();
+// ===== COMPLEMENTO PARA O JAVASCRIPT DO CRIAR.EJS =====
+// Adicione este código após a linha que termina com "contentField.focus();" na função useTemplate()
+
+    showNotification(`✅ Template "${template.title}" aplicado!`, 'success');
+}
+
+// ===== PREVIEW =====
+function previewPrompt() {
+    // Coletar dados do formulário
+    const formData = {
+        title: document.getElementById('title').value.trim(),
+        description: document.getElementById('description').value.trim(),
+        content: document.getElementById('content').value.trim(),
+        category: document.getElementById('category').value,
+        tone: document.getElementById('tone').value,
+        tags: document.getElementById('tags').value.trim()
+    };
+    
+    // Validar campos obrigatórios
+    if (!formData.title) {
+        showNotification('❌ Título é obrigatório para preview', 'error');
+        document.getElementById('title').focus();
+        return;
+    }
+    
+    if (!formData.content) {
+        showNotification('❌ Conteúdo é obrigatório para preview', 'error');
+        document.getElementById('content').focus();
+        return;
+    }
+    
+    // Preencher preview
+    document.getElementById('previewTitle').textContent = formData.title;
+    document.getElementById('previewCategory').textContent = formData.category;
+    document.getElementById('previewTone').textContent = formData.tone;
+    
+    const descElement = document.getElementById('previewDescription');
+    if (formData.description) {
+        descElement.textContent = formData.description;
+        descElement.style.display = 'block';
+    } else {
+        descElement.style.display = 'none';
+    }
+    
+    document.getElementById('previewContentText').textContent = formData.content;
+    previewContent = formData.content; // Armazenar para copiar
+    
+    // Tags
+    const tagsElement = document.getElementById('previewTags');
+    if (formData.tags) {
+        const tags = formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag);
+        tagsElement.innerHTML = tags.map(tag => 
+            `<span class="preview-tag">#${tag}</span>`
+        ).join('');
+        tagsElement.style.display = 'flex';
+    } else {
+        tagsElement.style.display = 'none';
+    }
+    
+    // Mostrar modal
+    document.getElementById('previewModal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closePreview() {
+    document.getElementById('previewModal').classList.remove('show');
+    document.body.style.overflow = 'auto';
+}
+
+function copyPreviewContent() {
+    if (previewContent) {
+        copyToClipboard(previewContent);
+        closePreview();
+    }
+}
+
+// ===== UTILITÁRIOS =====
+function expandTextarea() {
+    const textarea = document.getElementById('content');
+    const currentRows = parseInt(textarea.getAttribute('rows') || '8');
+    const newRows = currentRows === 8 ? 20 : 8;
+    
+    textarea.setAttribute('rows', newRows);
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+    
+    const button = event.target.closest('.btn');
+    const icon = button.querySelector('i');
+    if (newRows === 20) {
+        icon.setAttribute('data-lucide', 'minimize-2');
+    } else {
+        icon.setAttribute('data-lucide', 'maximize-2');
+    }
+    
+    // Reinicializar ícones Lucide
+    lucide.createIcons();
+}
+
+// ===== SUBMIT DO FORMULÁRIO =====
+async function handleSubmit(event) {
+    event.preventDefault();
+    
+    console.log('📝 Iniciando submissão do formulário...');
+    
+    // Validar todos os campos
+    const isValidTitle = validateField('title');
+    const isValidContent = validateField('content');
+    
+    if (!isValidTitle || !isValidContent) {
+        showNotification('❌ Por favor, corrija os erros no formulário', 'error');
+        return;
+    }
+    
+    // Coletar dados do formulário
+    const formData = {
+        title: document.getElementById('title').value.trim(),
+        description: document.getElementById('description').value.trim(),
+        content: document.getElementById('content').value.trim(),
+        category: document.getElementById('category').value,
+        tone: document.getElementById('tone').value,
+        tags: document.getElementById('tags').value.trim()
+    };
+    
+    // Mostrar loading
+    const submitBtn = document.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i data-lucide="loader-2"></i> Salvando...';
+    submitBtn.disabled = true;
+    
+    try {
+        // Enviar para API
+        const response = await fetch('/api/prompts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showNotification('✅ Prompt criado com sucesso!', 'success');
+            
+            // Redirecionar para biblioteca após um delay
+            setTimeout(() => {
+                window.location.href = '/biblioteca';
+            }, 1500);
+        } else {
+            throw new Error(result.message || 'Erro ao criar prompt');
+        }
+        
+    } catch (error) {
+        console.error('❌ Erro ao criar prompt:', error);
+        showNotification(`❌ Erro ao salvar prompt: ${error.message}`, 'error');
+        
+        // Restaurar botão
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        lucide.createIcons();
+    }
+}
+
+// ===== INICIALIZAÇÃO FINAL =====
+// Certifique-se de que os ícones Lucide são inicializados
+document.addEventListener('DOMContentLoaded', function() {
+    // Reinicializar ícones após qualquer mudança dinâmica
+    setTimeout(() => {
+        lucide.createIcons();
+    }, 100);
+});
+
+// Função para reinicializar ícones após mudanças dinâmicas no DOM
+function refreshIcons() {
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+}
+
+// Chamar refreshIcons sempre que necessário
+window.refreshIcons = refreshIcons;
